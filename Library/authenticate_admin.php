@@ -3,6 +3,14 @@ session_start();
 
 include('database_connection.php');
 
+// Function to log messages to a file
+function logMessage($message) {
+    $logFile = 'log.txt';
+    $currentDateTime = date('Y-m-d H:i:s');
+    $logMessage = "[$currentDateTime] $message\n";
+    file_put_contents($logFile, $logMessage, FILE_APPEND | LOCK_EX);
+}
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize user inputs
@@ -24,6 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["username"] = $username;
         $_SESSION['user_role'] = $user_role;
 
+        $logMessage = "Successful login attempt for user: $username";
+        logMessage($logMessage);
+        
         header("Location: admin_dashboard.php");
         exit();
     } else {
